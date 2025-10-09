@@ -17,7 +17,7 @@ export class UsersService {
 			return await this.repo.save(user);
 		}
 	
-	async FindUserById(id:number){
+	async FindUserById(id:number){ 
 		if(!id) throw new NotFoundException("Invalid ID");
 		return await this.repo.findOneBy({id});
 	}
