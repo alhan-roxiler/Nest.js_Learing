@@ -58,17 +58,17 @@ export class UsersController {
 	@Get('/:id')
 	// @UseInterceptors(ClassSerializerInterceptor)
 	async findUserById(@Param('id') id: string) {
-		return this.usersService.FindUserById(Number(id));
+		return this.usersService.findUserById(Number(id));
 	}
 
 	@Get()
 	async findUserByEmail(@Query('email') email: string) {
-		return this.usersService.Find(email);
+		return this.usersService.find(email);
 	}
 	
 	@Patch('/:id')
 	async updateUser(@Param('id') id: string, @Body() attribute: Partial<CreateUserDto>) {
-		return this.usersService.Update(Number(id), attribute);
+		return this.usersService.update(Number(id), attribute);
 	}
 	
 	

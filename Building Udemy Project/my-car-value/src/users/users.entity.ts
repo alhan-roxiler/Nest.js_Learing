@@ -25,4 +25,7 @@ export class User{
    @OneToMany(()=>Report, (report)=>report.user)
    reports:Report[];
 
+   @Column({default:false})
+   isAdmin:boolean;
+
 }

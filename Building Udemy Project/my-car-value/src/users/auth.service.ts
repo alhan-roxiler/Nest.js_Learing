@@ -13,7 +13,7 @@ export class AuthService {
 
 	async signup(email: string, password: string) {
 		// 1. see if email is in use
-		const user = await this.usersService.Find(email);
+		const user = await this.usersService.find(email);
 		console.log(user);
 		if (user.length > 0) throw new BadRequestException("email already exists");
 
@@ -32,7 +32,7 @@ export class AuthService {
 	}
 
 	async signin(email: string, password: string) {
-		const [user] = await this.usersService.Find(email);
+		const [user] = await this.usersService.find(email);
 		if(!user) throw new BadRequestException("invalid credentials");
 
 		const [salt, storedHash] = user.password.split('.');
