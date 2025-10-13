@@ -1,17 +1,20 @@
-import { Controller,Post,Body,Param,Query,Patch,Delete, Get , UseInterceptors,ClassSerializerInterceptor,Session} from '@nestjs/common';
+import { Controller,Post,Body,Param,Query,Patch,Delete, Get , UseInterceptors,ClassSerializerInterceptor,Session, UseGuards} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Serialize} from 'src/interceptor/serialize.interceptor';
 import { UserDto } from './dto/user.dto';
 import { AuthService } from '../users/auth.service';
-
-
+import { CurrentUser } from './decorator/current-user.decorator';
+import { CurrentUserInterceptor } from './interceptor/current-user.interceptor';
+import { User } from './users.entity';
+import { AuthGuard } from 'src/guard/auth.guard';
 
 
 
 @Controller('auth')
 // @UseInterceptors(new SerializeInterceptor(UserDto))
 @Serialize(UserDto)
+@UseInterceptors(CurrentUserInterceptor)
 export class UsersController {
 	
 	constructor(
@@ -28,15 +31,22 @@ export class UsersController {
 		return user;
 	}
 
+	// @Get('/whoami')
+	// whoAmI(@Session() session:any){
+	// 	return this.usersService.FindUserById(session.userId);
+	// }
+    @UseGuards(AuthGuard)
 	@Get('/whoami')
-	whoAmI(@Session() session:any){
-		return this.usersService.FindUserById(session.userId);
+	whoAmI(@CurrentUser() user:User){
+		console.log(user);
+		return user
 	}
 
 	@Post('/signin')
 	async signin(@Body() body:CreateUserDto, @Session() session: any ){
 		const user = await this.authService.signin(body.email, body.password);
 		session.userId = user.id;
+		session.email = user.email;
 		return user;	
 	} 
 	@Post('/signout')
@@ -46,7 +56,7 @@ export class UsersController {
 	}
 
 	@Get('/:id')
-	@UseInterceptors(ClassSerializerInterceptor)
+	// @UseInterceptors(ClassSerializerInterceptor)
 	async findUserById(@Param('id') id: string) {
 		return this.usersService.FindUserById(Number(id));
 	}

@@ -14,7 +14,8 @@ export class AuthService {
 	async signup(email: string, password: string) {
 		// 1. see if email is in use
 		const user = await this.usersService.Find(email);
-		if (user) throw new BadRequestException("email already exists");
+		console.log(user);
+		if (user.length > 0) throw new BadRequestException("email already exists");
 
 		// 2. hash the users password
 		const salt = randomBytes(8).toString('hex');

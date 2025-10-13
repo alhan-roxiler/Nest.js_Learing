@@ -12,7 +12,7 @@ export class UsersService {
 	
 	async createUser(body:CreateUserDto){
 		 // Create new User Instance 
-			const user = this.repo.create({...body});
+			const user = this.repo.create(body);
 		// save it to the database
 			return await this.repo.save(user);
 		}
